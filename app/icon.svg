@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Provisório: substituir pelo favicon de brand/ quando os ficheiros chegarem. -->
+  <rect width="64" height="64" rx="14" fill="#1558D6"/>
+  <g transform="translate(14 11) scale(0.257)">
+    <path fill="#FFFFFF" d="M22 0H118L140 36a17.5 17.5 0 0 1-35 0 17.5 17.5 0 0 1-35 0 17.5 17.5 0 0 1-35 0 17.5 17.5 0 0 1-35 0Z"/>
+    <rect x="0" y="68" width="140" height="74" rx="26" fill="#FFFFFF"/>
+    <path fill="#FFFFFF" d="M24 135H64L28 160Z"/>
+    <path fill="#1558D6" d="M38 90H60L70 108 80 90H102L82 124H58Z"/>
+  </g>
+</svg>

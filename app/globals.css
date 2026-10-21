@@ -1,0 +1,230 @@
+@import "tailwindcss";
+
+@theme {
+  /* Estilo escuro da VITRYNE: fundo quase preto azulado, texto claro, azul como cor de acção. */
+  --color-fundo: #070d1a;
+  --color-superficie: #0e1729;
+  --color-brand: #1558d6;
+  --color-brand-deep: #0b2f73;
+  --color-brand-soft: #111d36;
+  --color-realce: #7fa6f5;
+  --color-wa: #128c7e;
+  --color-ink: #f2f5fb;
+  --color-mute: #a3afc6;
+  --color-line: #1f2b45;
+  --color-erro: #f87171;
+  --font-sans: var(--font-montserrat), system-ui, sans-serif;
+  --ease-fluid: cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--color-fundo);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+}
+
+h1,
+h2,
+h3 {
+  text-wrap: balance;
+  letter-spacing: -0.01em;
+}
+
+/* Botões e etiquetas no estilo do modelo: maiúsculas pequenas, espaçadas e em negrito. */
+.btn {
+  font-size: 0.75rem;
+  line-height: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+.etiqueta {
+  font-size: 0.75rem;
+  line-height: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+p,
+li {
+  text-wrap: pretty;
+}
+
+/*
+ * O toldo: a borda em festões do símbolo da VITRYNE.
+ * Fica por baixo (ou por cima, com .toldo-cima) de um bloco da mesma cor.
+ * A cor vem de --toldo; nas montras é a cor de destaque da loja.
+ */
+.toldo {
+  --festao: 32px;
+  height: calc(var(--festao) / 2);
+  background: var(--toldo, var(--color-brand-deep));
+  -webkit-mask: radial-gradient(circle calc(var(--festao) / 2) at 50% 0, #000 98%, transparent 100%) 0 0 / var(--festao) calc(var(--festao) / 2) repeat-x;
+  mask: radial-gradient(circle calc(var(--festao) / 2) at 50% 0, #000 98%, transparent 100%) 0 0 / var(--festao) calc(var(--festao) / 2) repeat-x;
+}
+.toldo-cima {
+  transform: scaleY(-1);
+}
+@media (min-width: 768px) {
+  .toldo {
+    --festao: 48px;
+  }
+}
+.toldo.toldo-pequeno {
+  --festao: 24px;
+}
+
+/*
+ * Hero escuro da página inicial: fundo quase preto azulado com brilho azul atrás do produto.
+ * A foto tem as bordas esbatidas para se fundir com o fundo.
+ */
+.hero-escuro {
+  background:
+    radial-gradient(42% 52% at 70% 50%, rgba(21, 88, 214, 0.45), transparent 70%),
+    radial-gradient(30% 40% at 72% 55%, rgba(127, 166, 245, 0.18), transparent 70%),
+    #070d1a;
+}
+/*
+ * Vidro fosco do painel: translúcido, desfocado, com borda fina de luz.
+ * Só funciona bem com algo por trás para desfocar, por isso o painel tem brilhos fixos no fundo.
+ */
+.vidro {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.025));
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+  backdrop-filter: blur(18px) saturate(140%);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.07),
+    0 24px 60px rgba(0, 0, 0, 0.35);
+}
+.vidro-suave {
+  background: rgba(255, 255, 255, 0.035);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+}
+/* Telemóveis fracos sem backdrop-filter: vidro passa a superfície opaca. */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .vidro {
+    background: var(--color-superficie);
+  }
+}
+.fundo-painel {
+  background:
+    radial-gradient(38% 40% at 85% 0%, rgba(21, 88, 214, 0.35), transparent 70%),
+    radial-gradient(30% 35% at 0% 60%, rgba(127, 166, 245, 0.14), transparent 70%),
+    radial-gradient(35% 30% at 60% 100%, rgba(11, 47, 115, 0.5), transparent 70%),
+    var(--color-fundo);
+  background-attachment: fixed;
+}
+
+.toast-entra {
+  animation: toast-entra 400ms var(--ease-fluid);
+}
+@keyframes toast-entra {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.98);
+  }
+}
+
+/* Esqueleto de carregamento: forma do conteúdo real com um brilho a passar. */
+.esqueleto {
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.04) 25%, rgba(255, 255, 255, 0.09) 50%, rgba(255, 255, 255, 0.04) 75%);
+  background-size: 200% 100%;
+  animation: esqueleto 1.4s ease-in-out infinite;
+  border-radius: 0.75rem;
+}
+@keyframes esqueleto {
+  to {
+    background-position: -200% 0;
+  }
+}
+
+/*
+ * Estilos de loja. As cores-base são variáveis, por isso basta redefini-las dentro da loja
+ * para a montra e a ficha do produto mudarem de aspecto sem duplicar componentes.
+ * --destaque é a cor que o vendedor escolheu.
+ */
+.tema-vitryne,
+.tema-boutique,
+.tema-moderno {
+  --color-brand: var(--destaque);
+}
+.tema-vitryne {
+  --color-realce: color-mix(in srgb, var(--destaque) 55%, white);
+  background:
+    radial-gradient(45% 35% at 80% 0%, color-mix(in srgb, var(--destaque) 40%, transparent), transparent 70%),
+    radial-gradient(35% 30% at 0% 40%, color-mix(in srgb, var(--destaque) 18%, transparent), transparent 70%),
+    var(--color-fundo);
+  background-attachment: fixed;
+  min-height: 100vh;
+}
+.tema-boutique,
+.tema-moderno {
+  --color-fundo: #ffffff;
+  --color-superficie: #f5f5f5;
+  --color-ink: #111111;
+  --color-mute: #6b6b6b;
+  --color-line: #e5e5e5;
+  --color-brand-soft: #f2f2f2;
+  --color-realce: var(--destaque);
+  background: var(--color-fundo);
+  color: var(--color-ink);
+  min-height: 100vh;
+}
+.tema-boutique {
+  --color-fundo: #f3f1ee;
+  --color-superficie: #ebe7e2;
+  --color-line: #ddd7cf;
+}
+/* Letra de revista do estilo Boutique (serifa do sistema, sem descarregar nada). */
+.letra-revista {
+  font-family: "Didot", "Bodoni MT", "Playfair Display", Georgia, "Times New Roman", serif;
+  letter-spacing: 0.01em;
+}
+
+/* Brilho azul discreto atrás das secções, à esquerda ou à direita, como no hero. */
+.brilho-esq {
+  background: radial-gradient(40% 60% at 15% 50%, rgba(21, 88, 214, 0.22), transparent 70%);
+}
+.brilho-dir {
+  background: radial-gradient(40% 60% at 85% 40%, rgba(21, 88, 214, 0.18), transparent 70%);
+}
+.hero-escuro .flutua {
+  -webkit-mask-image: radial-gradient(closest-side, #000 62%, transparent 100%);
+  mask-image: radial-gradient(closest-side, #000 62%, transparent 100%);
+  animation: flutua 6s ease-in-out infinite;
+}
+.hero-escuro .aneis {
+  animation: gira 90s linear infinite;
+}
+@keyframes flutua {
+  50% {
+    transform: translateY(-10px);
+  }
+}
+@keyframes gira {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .hero-escuro .flutua,
+  .hero-escuro .aneis,
+  .esqueleto {
+    animation: none;
+  }
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-brand);
+  outline-offset: 2px;
+}
