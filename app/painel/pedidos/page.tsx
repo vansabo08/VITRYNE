@@ -17,7 +17,7 @@ export default async function Pedidos() {
     const p = produtos.get(c.produto_id);
     return {
       id: c.id, tamanho: c.tamanho, cor: c.cor, vendido: c.vendido, data: c.created_at,
-      produto: p?.nome ?? "Produto apagado", preco: p?.preco ?? 0, foto: p?.fotos[0], tipo: p?.tipo ?? "roupa",
+      produto: p?.nome ?? "Produto apagado", preco: p?.preco ?? 0, foto: p?.fotos[0], tipo: p?.tipo ?? "outro",
       link: p ? `/${loja.slug}/${p.slug}` : null,
     };
   });

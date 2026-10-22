@@ -17,7 +17,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   const descricao = resumo(
     loja.descricao ||
-      `Roupa e calçado de ${loja.nome}${loja.cidade ? ` em ${loja.cidade}` : ""}. Escolhe o tamanho e a cor e pede no WhatsApp.`,
+      `Produtos de ${loja.nome}${loja.cidade ? ` em ${loja.cidade}` : ""}. Escolhe o que queres e pede no WhatsApp.`,
   );
   return {
     title: loja.nome,

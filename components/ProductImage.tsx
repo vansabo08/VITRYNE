@@ -1,6 +1,11 @@
 import Image from "next/image";
-import { TShirt, Sneaker } from "@phosphor-icons/react/dist/ssr";
+import { Armchair, DeviceMobile, ForkKnife, Handbag, Package, Sneaker, Sparkle, TShirt } from "@phosphor-icons/react/dist/ssr";
 import type { Tipo } from "@/lib/types";
+
+export const ICONES: Record<Tipo, typeof TShirt> = {
+  roupa: TShirt, calcado: Sneaker, acessorios: Handbag, beleza: Sparkle,
+  electronica: DeviceMobile, casa: Armchair, comida: ForkKnife, outro: Package,
+};
 
 /**
  * Foto do produto, servida pela optimização de imagens do Next (WebP na largura certa para cada ecrã).
@@ -23,7 +28,7 @@ export function ProductImage({
       />
     );
   }
-  const Icon = tipo === "calcado" ? Sneaker : TShirt;
+  const Icon = ICONES[tipo] ?? Package;
   return (
     <div className={`flex items-center justify-center bg-brand-soft ${className}`} role="img" aria-label={`${alt}, sem foto`}>
       <Icon className="size-10 text-realce/30" weight="light" />

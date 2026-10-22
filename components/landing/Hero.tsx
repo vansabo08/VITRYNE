@@ -1,7 +1,6 @@
-import Image from "next/image";
 import Link from "next/link";
 import { Play } from "@phosphor-icons/react/dist/ssr";
-import heroTenis from "@/assets/hero-tenis.webp";
+import { ProdutosRotativos } from "./ProdutosRotativos";
 
 /** Os anéis de linhas atrás do produto: elipses com rotação a crescer, em degradê de azul. */
 function Aneis() {
@@ -40,7 +39,7 @@ export function HeroEscuro() {
           <p className="mt-2 text-4xl font-semibold leading-tight text-[#7FA6F5] md:text-5xl">A tua loja online</p>
           <p className="mt-8 text-xs font-bold uppercase tracking-[0.2em]">Vende pelo WhatsApp</p>
           <p className="mt-3 max-w-sm text-sm leading-6 text-white/70">
-            Uma montra com o teu nome para a roupa e o calçado que vendes. O cliente escolhe o tamanho e a cor, e o pedido chega ao teu WhatsApp já escrito, com o produto, o preço e o link.
+            Uma montra com o teu nome para o que vendes: roupa, perfumes, electrónica, comida e muito mais. O cliente escolhe, e o pedido chega ao teu WhatsApp já escrito, com o produto, o preço e o link.
           </p>
           <div className="mt-10 flex flex-wrap items-center gap-6">
             <p className="leading-none">
@@ -58,13 +57,7 @@ export function HeroEscuro() {
 
         <div className="relative mx-auto aspect-square w-full max-w-[560px]">
           <Aneis />
-          <Image
-            src={heroTenis}
-            alt="Par de ténis brancos a flutuar sobre fundo escuro"
-            priority
-            sizes="(min-width: 768px) 50vw, 90vw"
-            className="flutua relative z-10 m-auto h-full w-auto object-contain"
-          />
+          <ProdutosRotativos />
         </div>
       </div>
 

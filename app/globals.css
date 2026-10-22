@@ -194,9 +194,12 @@ li {
 .brilho-dir {
   background: radial-gradient(40% 60% at 85% 40%, rgba(21, 88, 214, 0.18), transparent 70%);
 }
-.hero-escuro .flutua {
+/* Cada foto do hero desvanece nas bordas, para o fundo da foto se fundir com o azul escuro. */
+.hero-escuro .mascara-hero {
   -webkit-mask-image: radial-gradient(closest-side, #000 62%, transparent 100%);
   mask-image: radial-gradient(closest-side, #000 62%, transparent 100%);
+}
+.hero-escuro .flutua {
   animation: flutua 6s ease-in-out infinite;
 }
 .hero-escuro .aneis {

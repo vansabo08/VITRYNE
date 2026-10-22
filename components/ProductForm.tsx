@@ -10,11 +10,9 @@ import { enviarImagem } from "@/lib/upload";
 import { formatKz } from "@/lib/format";
 import { useToast } from "./painel/Toasts";
 import { ProductImage } from "./ProductImage";
+import { TIPOS } from "@/lib/tipos";
 
-const TAMANHOS: Record<Tipo, string[]> = {
-  calcado: Array.from({ length: 11 }, (_, i) => String(36 + i)),
-  roupa: ["P", "M", "G", "GG"],
-};
+const sugestoes = (t: Tipo) => TIPOS.find((x) => x.id === t)?.tamanhos ?? [];
 const CORES_RAPIDAS: Cor[] = [
   { nome: "Preto", hex: "#1B1B1B" }, { nome: "Branco", hex: "#F4F4F4" }, { nome: "Azul", hex: "#1558D6" },
   { nome: "Castanho", hex: "#8B5A2B" }, { nome: "Vermelho", hex: "#C62828" }, { nome: "Verde", hex: "#4F5B3A" },
@@ -31,10 +29,11 @@ export function ProductForm({ produto }: { produto?: Produto }) {
   const [categoria, setCategoria] = useState(produto?.categoria ?? "");
   const [descricao, setDescricao] = useState(produto?.descricao ?? "");
   const [activo, setActivo] = useState(produto?.activo ?? true);
-  const [tipo, setTipo] = useState<Tipo>(produto?.tipo ?? "roupa");
+  const [tipo, setTipo] = useState<Tipo>(produto?.tipo ?? "outro");
   const [tamanhos, setTamanhos] = useState<string[]>(produto?.tamanhos ?? []);
   const [cores, setCores] = useState<Cor[]>(produto?.cores ?? []);
   const [fotos, setFotos] = useState<string[]>(produto?.fotos ?? []);
+  const [novoTamanho, setNovoTamanho] = useState("");
   const [novaCor, setNovaCor] = useState("");
   const [novoHex, setNovoHex] = useState("#1B1B1B");
   const [arrastar, setArrastar] = useState<number | null>(null);
@@ -43,6 +42,19 @@ export function ProductForm({ produto }: { produto?: Produto }) {
   const [aGuardar, setAGuardar] = useState(false);
 
   const alternar = (lista: string[], v: string) => (lista.includes(v) ? lista.filter((x) => x !== v) : [...lista, v]);
+  // Sugestões do tipo primeiro, depois os tamanhos escritos à mão.
+  const opcoesTamanho = [...sugestoes(tipo), ...tamanhos.filter((t) => !sugestoes(tipo).includes(t))];
+  const adicionarTamanho = () => {
+    const t = novoTamanho.trim().slice(0, 30);
+    if (t && !tamanhos.some((x) => x.toLowerCase() === t.toLowerCase())) setTamanhos([...tamanhos, t]);
+    setNovoTamanho("");
+  };
+  // Ao mudar de tipo, saem só os tamanhos sugeridos do tipo anterior; os escritos à mão ficam.
+  const mudarTipo = (t: Tipo) => {
+    const antigos = sugestoes(tipo);
+    setTamanhos(tamanhos.filter((x) => !antigos.includes(x)));
+    setTipo(t);
+  };
   const adicionarCor = (c: Cor) => !cores.some((x) => x.nome.toLowerCase() === c.nome.toLowerCase()) && setCores([...cores, c]);
   const mover = (de: number, para: number) => {
     if (de === para) return;
@@ -111,18 +123,18 @@ export function ProductForm({ produto }: { produto?: Produto }) {
           <section className={cartao}>
             <h2 className="etiqueta text-mute">Informação</h2>
             <label className="mt-4 block text-sm font-semibold">Nome
-              <input value={nome} onChange={(e) => setNome(e.target.value)} placeholder="Ex.: Vestido Capulana Mbanza" className={campo} />
+              <input value={nome} onChange={(e) => setNome(e.target.value)} placeholder="Ex.: Perfume Kalahari 100 ml" className={campo} />
             </label>
             <div className="mt-4 grid gap-4 sm:grid-cols-2">
               <label className="block text-sm font-semibold">Preço em Kz
                 <input value={preco} onChange={(e) => setPreco(e.target.value.replace(/\D/g, ""))} inputMode="numeric" placeholder="24000" className={campo} />
               </label>
               <label className="block text-sm font-semibold">Categoria
-                <input value={categoria} onChange={(e) => setCategoria(e.target.value)} placeholder="Vestidos, Calçado…" className={campo} />
+                <input value={categoria} onChange={(e) => setCategoria(e.target.value)} placeholder="Perfumes, Vestidos, Telemóveis…" className={campo} />
               </label>
             </div>
             <label className="mt-4 block text-sm font-semibold">Descrição
-              <textarea value={descricao} onChange={(e) => setDescricao(e.target.value)} rows={4} placeholder="Tecido, corte, como fica no corpo…" className={campo} />
+              <textarea value={descricao} onChange={(e) => setDescricao(e.target.value)} rows={4} placeholder="Material, medidas, o que vem incluído…" className={campo} />
             </label>
           </section>
 
@@ -170,23 +182,36 @@ export function ProductForm({ produto }: { produto?: Produto }) {
           </section>
 
           <section className={cartao}>
-            <h2 className="etiqueta text-mute">Tamanhos e cores</h2>
-            <div className="mt-4 flex gap-2">
-              {(["roupa", "calcado"] as Tipo[]).map((t) => (
+            <h2 className="etiqueta text-mute">Tipo de produto</h2>
+            <div className="mt-4 flex flex-wrap gap-2" role="radiogroup" aria-label="Tipo de produto">
+              {TIPOS.map((t) => (
                 <button
-                  type="button" key={t} aria-pressed={tipo === t}
-                  onClick={() => { setTipo(t); setTamanhos([]); }}
-                  className={`rounded-xl px-4 py-2.5 text-sm font-semibold transition-colors ${tipo === t ? "bg-brand text-white" : "bg-white/5 text-mute hover:text-ink"}`}
-                >{t === "roupa" ? "Roupa" : "Calçado"}</button>
+                  type="button" key={t.id} role="radio" aria-checked={tipo === t.id}
+                  onClick={() => mudarTipo(t.id)}
+                  className={`rounded-xl px-4 py-2.5 text-sm font-semibold transition-colors ${tipo === t.id ? "bg-brand text-white" : "bg-white/5 text-mute hover:text-ink"}`}
+                >{t.nome}</button>
               ))}
             </div>
-            <p className="mt-5 text-sm font-semibold">Tamanhos {tipo === "calcado" ? "(36 a 46)" : "(P a GG)"}</p>
+          </section>
+
+          <section className={cartao}>
+            <h2 className="etiqueta text-mute">Opções para o cliente escolher</h2>
+            <p className="mt-2 text-xs text-mute">Opcional. Se o produto não tem tamanhos nem cores, deixa vazio: o cliente pede directo.</p>
+            <p className="mt-5 text-sm font-semibold">Tamanhos</p>
+            {opcoesTamanho.length > 0 && (
             <div className="mt-2 flex flex-wrap gap-2">
-              {TAMANHOS[tipo].map((t) => (
+              {opcoesTamanho.map((t) => (
                 <button type="button" key={t} aria-pressed={tamanhos.includes(t)} onClick={() => setTamanhos(alternar(tamanhos, t))}
                   className={`h-11 min-w-11 rounded-xl px-3 text-sm font-bold transition-colors ${tamanhos.includes(t) ? "bg-brand text-white" : "bg-white/5 text-mute ring-1 ring-white/10 hover:text-ink"}`}
                 >{t}</button>
               ))}
+            </div>
+            )}
+            <div className="mt-3 flex gap-2">
+              <input value={novoTamanho} onChange={(e) => setNovoTamanho(e.target.value)} maxLength={30}
+                onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); adicionarTamanho(); } }}
+                placeholder="Outro tamanho, ex.: 500 ml, 128 GB, XL" aria-label="Novo tamanho" className={`${campo} mt-0`} />
+              <button type="button" onClick={adicionarTamanho} className="btn shrink-0 rounded-md border border-white/15 px-4 hover:border-white/30">Juntar</button>
             </div>
             <p className="mt-5 text-sm font-semibold">Cores</p>
             <div className="mt-2 flex flex-wrap gap-2">
@@ -206,7 +231,9 @@ export function ProductForm({ produto }: { produto?: Produto }) {
             </div>
             <div className="mt-3 flex gap-2">
               <input type="color" value={novoHex} onChange={(e) => setNovoHex(e.target.value)} aria-label="Tom da cor" className="h-12 w-14 shrink-0 cursor-pointer rounded-xl border border-white/10 bg-white/5 p-1" />
-              <input value={novaCor} onChange={(e) => setNovaCor(e.target.value)} placeholder="Outra cor, ex.: Mostarda" aria-label="Nome da cor" className={`${campo} mt-0`} />
+              <input value={novaCor} onChange={(e) => setNovaCor(e.target.value)} maxLength={40}
+                onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); const n = novaCor.trim(); if (n) adicionarCor({ nome: n, hex: novoHex.toUpperCase() }); setNovaCor(""); } }}
+                placeholder="Outra cor, ex.: Mostarda" aria-label="Nome da cor" className={`${campo} mt-0`} />
               <button type="button" onClick={() => { const n = novaCor.trim(); if (n) adicionarCor({ nome: n, hex: novoHex.toUpperCase() }); setNovaCor(""); }}
                 className="btn shrink-0 rounded-md border border-white/15 px-4 hover:border-white/30">Juntar</button>
             </div>

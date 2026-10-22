@@ -12,7 +12,7 @@ const montserrat = localFont({
 });
 
 const descricao =
-  "Cria a tua loja online de roupa e calçado em minutos. O cliente escolhe tamanho e cor e pede no teu WhatsApp com a mensagem pronta.";
+  "Cria a loja online do teu negócio em minutos. O cliente escolhe o produto e pede no teu WhatsApp com a mensagem pronta.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),

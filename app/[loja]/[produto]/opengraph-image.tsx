@@ -1,9 +1,9 @@
 import { ImageResponse } from "next/og";
-import { Sneaker, TShirt } from "@phosphor-icons/react/dist/ssr";
 import { getLojaPublica, getProduto } from "@/lib/data";
 import { corTexto } from "@/lib/cor";
 import { formatKz } from "@/lib/format";
 import { OG_SIZE, SimboloOg, fontes } from "@/lib/og";
+import { ICONES } from "@/components/ProductImage";
 
 export const size = OG_SIZE;
 export const contentType = "image/png";
@@ -22,7 +22,8 @@ export default async function Image({ params }: { params: Promise<{ loja: string
   const nomeLoja = loja?.nome ?? "Loja VITRYNE";
   const nome = produto?.nome ?? "Produto";
   const preco = produto ? formatKz(produto.preco) : "";
-  const tamanhos = produto ? `Tamanhos ${produto.tamanhos.join(", ")}` : "";
+  const tamanhos = produto?.tamanhos.length ? `Tamanhos ${produto.tamanhos.join(", ")}` : "";
+  const Icone = ICONES[produto?.tipo ?? "outro"];
   const foto = fotoCompativel(produto?.fotos[0]);
 
   return new ImageResponse(
@@ -51,13 +52,7 @@ export default async function Image({ params }: { params: Promise<{ loja: string
           {foto ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img src={foto} alt="" width={520} height={630} style={{ objectFit: "cover", width: "100%", height: "100%" }} />
-          ) : (
-            produto?.tipo === "calcado" ? (
-            <Sneaker size={300} color={corTexto(cor)} weight="light" />
-          ) : (
-            <TShirt size={300} color={corTexto(cor)} weight="light" />
-          )
-          )}
+          ) : <Icone size={300} color={corTexto(cor)} weight="light" />}
         </div>
       </div>
     ),

@@ -19,16 +19,19 @@ export type LojaRow = {
 /** Selecção usada em todas as leituras de loja com produtos. */
 export const LOJA_SELECT = "*, produtos(*, imagens(url, ordem), variantes(tamanho, cor, cor_hex))";
 
+/** Roupa segue P, M, G, GG; o resto (números, "500 ml", "128 GB") em ordem natural. */
 function ordenarTamanhos(tamanhos: string[], tipo: Tipo): string[] {
-  const unicos = Array.from(new Set(tamanhos));
-  return tipo === "calcado"
-    ? unicos.sort((a, b) => Number(a) - Number(b))
-    : unicos.sort((a, b) => ORDEM_ROUPA.indexOf(a) - ORDEM_ROUPA.indexOf(b));
+  const unicos = Array.from(new Set(tamanhos.filter(Boolean)));
+  const natural = (a: string, b: string) => a.localeCompare(b, "pt", { numeric: true });
+  if (tipo !== "roupa") return unicos.sort(natural);
+  const pos = (t: string) => (ORDEM_ROUPA.includes(t) ? ORDEM_ROUPA.indexOf(t) : ORDEM_ROUPA.length);
+  return unicos.sort((a, b) => pos(a) - pos(b) || natural(a, b));
 }
 
 function mapProduto(p: ProdutoRow): Produto {
+  // Uma variante com cor '' ou tamanho '' quer dizer que essa opção não se aplica.
   const cores = new Map<string, Cor>();
-  p.variantes.forEach((v) => cores.set(v.cor, { nome: v.cor, hex: v.cor_hex }));
+  p.variantes.forEach((v) => v.cor && cores.set(v.cor, { nome: v.cor, hex: v.cor_hex }));
   return {
     id: p.id, slug: p.slug, nome: p.nome, descricao: p.descricao, preco: p.preco,
     categoria: p.categoria, tipo: p.tipo, activo: p.activo,

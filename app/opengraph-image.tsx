@@ -7,7 +7,7 @@ export const alt = "VITRYNE, a tua loja online pronta em minutos";
 
 export default async function Image() {
   const titulo = "A tua loja online, pronta em minutos.";
-  const sub = "Roupa e calçado em Angola. Pedidos no WhatsApp com a mensagem já escrita.";
+  const sub = "Para todo o tipo de negócio em Angola. Pedidos no WhatsApp com a mensagem já escrita.";
   return new ImageResponse(
     (
       <div style={{ width: "100%", height: "100%", display: "flex", flexDirection: "column", backgroundColor: "#FFFFFF", fontFamily: "Montserrat" }}>

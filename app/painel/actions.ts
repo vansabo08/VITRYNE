@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { isValidSlug, normalizeAngolaPhone } from "@/lib/format";
 import type { Cor, Tema, Tipo } from "@/lib/types";
+import { IDS_TIPO } from "@/lib/tipos";
 
 type Resultado = { erro?: string; slug?: string };
 
@@ -71,8 +72,10 @@ export async function guardarProduto(input: ProdutoInput): Promise<Resultado> {
   if (!loja) return { erro: "Cria primeiro a tua loja." };
   if (!input.nome.trim()) return { erro: "Escreve o nome do produto." };
   if (!(input.preco > 0)) return { erro: "Escreve um preço maior que zero." };
-  if (input.tamanhos.length === 0) return { erro: "Escolhe pelo menos um tamanho." };
-  if (input.cores.length === 0) return { erro: "Adiciona pelo menos uma cor." };
+  if (!IDS_TIPO.includes(input.tipo)) return { erro: "Escolhe o tipo de produto." };
+  // Tamanhos e cores são opcionais; tira vazios e repetidos.
+  const tamanhos = Array.from(new Set(input.tamanhos.map((t) => t.trim().slice(0, 30)).filter(Boolean)));
+  const cores = input.cores.map((c) => ({ ...c, nome: c.nome.trim().slice(0, 40) })).filter((c) => c.nome);
 
   let id = input.id;
   const campos = {
@@ -100,9 +103,16 @@ export async function guardarProduto(input: ProdutoInput): Promise<Resultado> {
   // Substitui variantes e fotos pelos valores do formulário.
   await supabase.from("variantes").delete().eq("produto_id", id);
   await supabase.from("imagens").delete().eq("produto_id", id);
-  const variantes = input.tamanhos.flatMap((tamanho) => input.cores.map((c) => ({ produto_id: id, tamanho, cor: c.nome, cor_hex: c.hex })));
-  const { error: ev } = await supabase.from("variantes").insert(variantes);
-  if (ev) return { erro: "Não foi possível guardar tamanhos e cores." };
+  // Todas as combinações tamanho × cor; '' marca a opção que não se aplica. Sem nenhuma das duas, não há variantes.
+  const listaTamanhos = tamanhos.length ? tamanhos : [""];
+  const listaCores = cores.length ? cores : [{ nome: "", hex: "#CCCCCC" }];
+  const variantes = listaTamanhos
+    .flatMap((tamanho) => listaCores.map((c) => ({ produto_id: id, tamanho, cor: c.nome, cor_hex: c.hex })))
+    .filter((v) => v.tamanho || v.cor);
+  if (variantes.length) {
+    const { error: ev } = await supabase.from("variantes").insert(variantes);
+    if (ev) return { erro: "Não foi possível guardar tamanhos e cores." };
+  }
   if (input.fotos.length) {
     await supabase.from("imagens").insert(input.fotos.map((url, ordem) => ({ produto_id: id, url, ordem })));
   }

@@ -13,3 +13,8 @@ export function normalizeAngolaPhone(input: string): string | null {
 export function isValidSlug(slug: string): boolean {
   return /^[a-z0-9](?:[a-z0-9-]{1,28}[a-z0-9])$/.test(slug);
 }
+
+/** "Tamanho 42, Preto", só "Preto", ou "" quando o pedido não tem opções. */
+export function descreverOpcoes(tamanho: string, cor: string): string {
+  return [tamanho && `Tamanho ${tamanho}`, cor].filter(Boolean).join(", ");
+}

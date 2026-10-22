@@ -3,7 +3,7 @@
 import { useState, useTransition } from "react";
 import { ArrowSquareOut, ChatCircleDots, CheckCircle } from "@phosphor-icons/react";
 import type { Tipo } from "@/lib/types";
-import { formatKz } from "@/lib/format";
+import { descreverOpcoes, formatKz } from "@/lib/format";
 import { haQuanto } from "@/lib/datas";
 import { marcarVendido } from "@/app/painel/actions";
 import { useToast } from "./painel/Toasts";
@@ -91,7 +91,7 @@ export function OrderList({ pedidos }: { pedidos: Pedido[] }) {
                       </a>
                     )}
                   </p>
-                  <p className="text-xs text-mute">Tamanho {p.tamanho}, {p.cor}, {haQuanto(p.data)}</p>
+                  <p className="text-xs text-mute">{[descreverOpcoes(p.tamanho, p.cor), haQuanto(p.data)].filter(Boolean).join(", ")}</p>
                 </div>
                 <p className="hidden shrink-0 text-sm font-bold sm:block">{formatKz(p.preco)}</p>
                 <button

@@ -1,4 +1,4 @@
-export type Tipo = "calcado" | "roupa";
+export type Tipo = "roupa" | "calcado" | "acessorios" | "beleza" | "electronica" | "casa" | "comida" | "outro";
 export type Plano = "gratis" | "basico" | "pro";
 export type Tema = "vitryne" | "boutique" | "moderno";
 
@@ -12,7 +12,9 @@ export type Produto = {
   preco: number;
   categoria: string;
   tipo: Tipo;
+  /** Vazio quando o produto não tem tamanhos (ex.: um perfume de tamanho único). */
   tamanhos: string[];
+  /** Vazio quando o produto não tem cores à escolha. */
   cores: Cor[];
   /** URLs das fotos. Um valor que começa por "#" é um tom liso de demonstração. */
   fotos: string[];

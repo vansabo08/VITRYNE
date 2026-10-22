@@ -3,7 +3,9 @@ import { formatKz } from "./format";
 type Pedido = {
   loja: string;
   produto: string;
+  /** '' quando o produto não tem tamanhos: a linha não aparece. */
   tamanho: string;
+  /** '' quando o produto não tem cores: a linha não aparece. */
   cor: string;
   preco: number;
   url: string;
@@ -14,8 +16,8 @@ export function buildWhatsAppMessage(p: Pedido): string {
     `Olá! Quero este produto da ${p.loja}:`,
     "",
     p.produto,
-    `Tamanho: ${p.tamanho}`,
-    `Cor: ${p.cor}`,
+    ...(p.tamanho ? [`Tamanho: ${p.tamanho}`] : []),
+    ...(p.cor ? [`Cor: ${p.cor}`] : []),
     `Preço: ${formatKz(p.preco)}`,
     "",
     `Link: ${p.url}`,

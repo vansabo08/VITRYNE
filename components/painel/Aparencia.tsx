@@ -90,7 +90,7 @@ export function Aparencia(p: {
       </div>
 
       <p className="mt-6 text-sm font-semibold">Imagem do banner</p>
-      <p className="text-xs text-mute">Aparece no topo da loja. Uma foto na horizontal, com a roupa ou com pessoas a vestir.</p>
+      <p className="text-xs text-mute">Aparece no topo da loja. Uma foto na horizontal dos teus produtos ou da tua loja.</p>
       {p.banner ? (
         <div className="relative mt-3 overflow-hidden rounded-xl ring-1 ring-white/10">
           {/* eslint-disable-next-line @next/next/no-img-element */}

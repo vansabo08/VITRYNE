@@ -5,7 +5,7 @@ import {
 import { requireLoja } from "@/lib/painel";
 import { estadoPlano } from "@/lib/plans";
 import { createClient } from "@/lib/supabase/server";
-import { formatKz } from "@/lib/format";
+import { descreverOpcoes, formatKz } from "@/lib/format";
 import { diaLuanda, haDias, haQuanto, ultimosDias } from "@/lib/datas";
 import { GraficoArea } from "@/components/painel/GraficoArea";
 import { ProductImage } from "@/components/ProductImage";
@@ -200,7 +200,7 @@ export default async function Inicio({ searchParams }: { searchParams: Promise<{
                     {p ? <ProductImage src={p.fotos[0]} tipo={p.tipo} alt={p.nome} sizes="48px" className="size-12 shrink-0 rounded-lg" /> : <span className="size-12 shrink-0 rounded-lg bg-white/5" />}
                     <div className="min-w-0 flex-1">
                       <p className="truncate text-sm font-semibold">{p?.nome ?? "Produto apagado"}</p>
-                      <p className="text-xs text-mute">Tamanho {c.tamanho}, {c.cor}, {haQuanto(c.created_at)}</p>
+                      <p className="text-xs text-mute">{[descreverOpcoes(c.tamanho, c.cor), haQuanto(c.created_at)].filter(Boolean).join(", ")}</p>
                     </div>
                     <span className={`shrink-0 rounded-full px-2.5 py-1 text-[11px] font-semibold ${c.vendido ? "bg-wa/20 text-[#4ADE80]" : "bg-white/5 text-mute"}`}>
                       {c.vendido ? "Vendido" : "Interesse"}

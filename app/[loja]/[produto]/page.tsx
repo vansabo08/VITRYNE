@@ -20,7 +20,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   const titulo = `${produto.nome}, ${formatKz(produto.preco)}`;
   const descricao = resumo(
-    `${produto.descricao ? produto.descricao + " " : ""}Tamanhos ${produto.tamanhos.join(", ")}. Pede no WhatsApp de ${loja.nome}.`,
+    `${produto.descricao ? produto.descricao + " " : ""}${produto.tamanhos.length ? `Tamanhos ${produto.tamanhos.join(", ")}. ` : ""}Pede no WhatsApp de ${loja.nome}.`,
   );
   const caminho = `/${loja.slug}/${produto.slug}`;
   return {

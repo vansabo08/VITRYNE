@@ -7,6 +7,7 @@ import { formatKz } from "@/lib/format";
 import { buildWhatsAppUrl } from "@/lib/whatsapp";
 import { registarClique } from "@/lib/track";
 import { ProductImage } from "./ProductImage";
+import { temGuiaTamanhos } from "@/lib/tipos";
 
 /* Medidas aproximadas (tabela europeia comum). A loja confirma na conversa. */
 const PE_CM: Record<string, string> = {
@@ -60,20 +61,25 @@ export function ProductPurchase({ loja, produto, url }: { loja: Loja; produto: P
   const galeria = useRef<HTMLDivElement>(null);
   const revista = loja.tema === "boutique";
 
-  const falta = !tamanho ? "Escolhe o tamanho" : !cor ? "Escolhe a cor" : null;
-  const avisoTamanho = tentou && !tamanho;
-  const avisoCor = tentou && !!tamanho && !cor;
+  // Só se pede o que o produto tem: sem tamanhos (ou sem cores) essa escolha não existe.
+  const pedeTamanho = produto.tamanhos.length > 0;
+  const pedeCor = produto.cores.length > 0;
+  const faltaTamanho = pedeTamanho && !tamanho;
+  const faltaCor = pedeCor && !cor;
+  const falta = faltaTamanho ? "Escolhe o tamanho" : faltaCor ? "Escolhe a cor" : null;
+  const avisoTamanho = tentou && faltaTamanho;
+  const avisoCor = tentou && !faltaTamanho && faltaCor;
   const fotos = produto.fotos.length ? produto.fotos : [undefined];
 
   function pedir() {
-    if (falta || !tamanho || !cor) {
+    if (falta) {
       setTentou(true);
       return;
     }
     // O clique fica registado mesmo que o cliente não chegue a enviar a mensagem.
-    registarClique({ lojaId: loja.id, produtoId: produto.id, tamanho, cor });
+    registarClique({ lojaId: loja.id, produtoId: produto.id, tamanho: tamanho ?? "", cor: cor ?? "" });
     window.open(
-      buildWhatsAppUrl(loja.whatsapp, { loja: loja.nome, produto: produto.nome, tamanho, cor, preco: produto.preco, url }),
+      buildWhatsAppUrl(loja.whatsapp, { loja: loja.nome, produto: produto.nome, tamanho: tamanho ?? "", cor: cor ?? "", preco: produto.preco, url }),
       "_blank",
       "noopener",
     );
@@ -161,15 +167,18 @@ export function ProductPurchase({ loja, produto, url }: { loja: Loja; produto: P
         <p className="mt-4 text-3xl font-bold">{formatKz(produto.preco)}</p>
         {produto.descricao && <p className="mt-5 text-base leading-7 text-mute">{produto.descricao}</p>}
 
+        {pedeTamanho && (
         <fieldset className="mt-8">
           <div className="flex items-center justify-between">
             <legend className={`text-sm font-bold ${avisoTamanho ? "text-erro" : ""}`}>
               {avisoTamanho ? "Escolhe o tamanho" : "Tamanho"}
               {tamanho && <span className="font-medium text-mute"> {tamanho}</span>}
             </legend>
+            {temGuiaTamanhos(produto.tipo) && (
             <button type="button" onClick={() => setGuia(true)} className="flex items-center gap-1.5 text-xs font-semibold text-mute underline underline-offset-4 hover:text-ink">
               <Ruler className="size-4" /> Guia de tamanhos
             </button>
+            )}
           </div>
           <div className="mt-3 flex flex-wrap gap-2">
             {produto.tamanhos.map((t) => (
@@ -186,7 +195,9 @@ export function ProductPurchase({ loja, produto, url }: { loja: Loja; produto: P
             ))}
           </div>
         </fieldset>
+        )}
 
+        {pedeCor && (
         <fieldset className="mt-7">
           <legend className={`text-sm font-bold ${avisoCor ? "text-erro" : ""}`}>
             {avisoCor ? "Escolhe a cor" : "Cor"}
@@ -208,6 +219,7 @@ export function ProductPurchase({ loja, produto, url }: { loja: Loja; produto: P
             ))}
           </div>
         </fieldset>
+        )}
 
         <div className="mt-10 hidden md:block">
           {botao}

@@ -14,7 +14,7 @@ export default async function Image({ params }: { params: Promise<{ loja: string
   const nome = loja?.nome ?? "Loja VITRYNE";
   const cor = loja?.destaque ?? "#1558D6";
   const texto = corTexto(cor);
-  const linha = loja?.cidade ? `Roupa e calçado em ${loja.cidade}` : "Roupa e calçado";
+  const linha = loja?.cidade ? `Loja online em ${loja.cidade}` : "Loja online";
   const link = `${SITE_URL.replace(/^https?:\/\//, "")}/${slug}`;
   const total = loja?.produtos.filter((p) => p.activo).length ?? 0;
   const contagem = `${total} ${total === 1 ? "produto" : "produtos"}`;

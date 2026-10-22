@@ -8,6 +8,12 @@ import { MensagemWhatsApp, MontraNoTelemovel } from "@/components/landing/Maquet
 import { HeroEscuro } from "@/components/landing/Hero";
 import vendedorArara from "@/assets/vendedor-arara.webp";
 import vestidoVermelho from "@/assets/vestido-vermelho.webp";
+import fotoTenis from "@/assets/hero-tenis.webp";
+import fotoPerfume from "@/assets/hero-perfume.webp";
+import fotoAuscultadores from "@/assets/hero-auscultadores.webp";
+import fotoRelogio from "@/assets/hero-relogio.webp";
+import fotoMala from "@/assets/hero-mala.webp";
+import fotoCafe from "@/assets/hero-cafe.webp";
 
 const botao =
   "btn inline-flex items-center justify-center rounded-md bg-brand px-6 py-3 text-white shadow-[0_12px_32px_rgba(21,88,214,0.4)] transition-colors duration-300 ease-fluid hover:bg-[#2A6BE6] active:scale-[0.98]";
@@ -25,9 +31,18 @@ function Titulo({ primeira, segunda, etiqueta }: { primeira: string; segunda: st
   );
 }
 
+const negocios = [
+  { nome: "Moda e calçado", foto: fotoTenis, alt: "Ténis brancos" },
+  { nome: "Beleza", foto: fotoPerfume, alt: "Frasco de perfume" },
+  { nome: "Electrónica", foto: fotoAuscultadores, alt: "Auscultadores" },
+  { nome: "Acessórios", foto: fotoRelogio, alt: "Relógio de pulso" },
+  { nome: "Malas e pele", foto: fotoMala, alt: "Mala de couro" },
+  { nome: "Comida e bebida", foto: fotoCafe, alt: "Café expresso" },
+];
+
 const passos = [
   { titulo: "Cria a loja", texto: "Escreves o nome, escolhes o link e pões o teu número de WhatsApp. Leva menos de cinco minutos." },
-  { titulo: "Carrega os produtos", texto: "Tiras as fotos com o telemóvel, pões o preço, os tamanhos e as cores. As fotos ficam leves sozinhas." },
+  { titulo: "Carrega os produtos", texto: "Tiras as fotos com o telemóvel e pões o preço. Tamanhos e cores só se o produto tiver. As fotos ficam leves sozinhas." },
   { titulo: "Partilha o link", texto: "No estado do WhatsApp, no Instagram ou num QR code colado na banca. Os pedidos chegam-te já escritos." },
 ];
 
@@ -42,7 +57,7 @@ const perguntas = [
   ["Os clientes pagam no site?", "Não. O cliente pede no WhatsApp e tu combinas o pagamento e a entrega na conversa, como já fazes hoje."],
   ["A minha loja aparece ao lado de outras?", "Não. Cada vendedor tem o seu link e o cliente só vê os teus produtos."],
   ["Funciona com dados móveis fracos?", "Sim. As fotos são comprimidas e as páginas são pequenas, para abrirem bem em 3G."],
-  ["Que tamanhos posso usar?", "Calçado do 36 ao 46 e roupa em P, M, G e GG. As cores escolhes tu, produto a produto."],
+  ["Que negócios podem usar?", "Qualquer um que venda produtos: roupa, calçado, beleza, electrónica, acessórios, comida e bebida, artigos para a casa. Tamanhos e cores são opcionais, usas só quando o produto os tem."],
   ["Como pago o Básico ou o Pro?", "Falas connosco e activamos o plano à mão depois do pagamento."],
 ];
 
@@ -52,6 +67,21 @@ export default function Home() {
       <LandingNav />
       <main id="conteudo">
         <HeroEscuro />
+
+        {/* Todo o tipo de negócio */}
+        <section className="mx-auto max-w-6xl px-4 py-20 md:py-28" aria-labelledby="negocios">
+          <div id="negocios">
+            <Titulo primeira="Para todo o tipo" segunda="de negócio" etiqueta="Se vendes pelo WhatsApp, serve-te" />
+          </div>
+          <ul className="mt-14 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
+            {negocios.map((n) => (
+              <li key={n.nome} className="group overflow-hidden rounded-2xl border border-line bg-superficie">
+                <Image src={n.foto} alt={n.alt} sizes="(min-width: 1024px) 16vw, (min-width: 640px) 33vw, 50vw" className="aspect-square h-auto w-full object-cover transition-transform duration-700 ease-fluid group-hover:scale-105" />
+                <p className="etiqueta px-4 py-4">{n.nome}</p>
+              </li>
+            ))}
+          </ul>
+        </section>
 
         {/* A montra real */}
         <section id="montra" className="brilho-esq scroll-mt-24">
@@ -79,9 +109,9 @@ export default function Home() {
             <MensagemWhatsApp className="absolute -bottom-8 right-4 w-[78%] max-w-[300px] md:-right-8" />
           </div>
           <div className="pt-8 md:pt-0">
-            <Titulo primeira="O pedido chega" segunda="já escrito" etiqueta="Produto, tamanho, cor, preço e link" />
+            <Titulo primeira="O pedido chega" segunda="já escrito" etiqueta="Produto, opções, preço e link" />
             <p className="mt-3 max-w-[480px] text-base leading-7 text-mute">
-              Acabou o «tem no 41?» e o «quanto custa?» repetido dez vezes por dia. Tu só confirmas e combinas a entrega.
+              Acabou o «ainda tens?» e o «quanto custa?» repetido dez vezes por dia. Tu só confirmas e combinas a entrega.
             </p>
             <p className="mt-4 max-w-[480px] text-base leading-7 text-mute">
               Mesmo quando o cliente desiste antes de enviar, o clique fica registado no teu painel. Sabes que produtos estão a chamar atenção.
@@ -182,7 +212,7 @@ export default function Home() {
         <div className="mx-auto flex max-w-6xl flex-col gap-6 px-4 py-10 md:flex-row md:items-center md:justify-between">
           <div>
             <Logo />
-            <p className="mt-2 text-sm text-mute">Lojas online para quem vende roupa e calçado em Angola.</p>
+            <p className="mt-2 text-sm text-mute">Lojas online para todo o tipo de negócio em Angola.</p>
           </div>
           <ul className="flex flex-wrap gap-6">
             <li><Link href="/kianda-style" className="etiqueta text-mute hover:text-ink">Loja de exemplo</Link></li>

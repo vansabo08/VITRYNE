@@ -1,11 +1,32 @@
 "use client";
 
+import Image, { type StaticImageData } from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/browser";
 import { SITE_URL } from "@/lib/site";
 import { Logo } from "./Logo";
+import vendedor from "@/assets/vendedor-arara.webp";
+import vestido from "@/assets/vestido-vermelho.webp";
+import tenis from "@/assets/hero-tenis.webp";
+import perfume from "@/assets/hero-perfume.webp";
+import auscultadores from "@/assets/hero-auscultadores.webp";
+import mala from "@/assets/hero-mala.webp";
+import cafe from "@/assets/hero-cafe.webp";
+
+/** Mosaico do computador (3×3): cada foto com a sua posição na grelha. */
+const MOSAICO: { foto: StaticImageData; alt: string; lugar: string }[] = [
+  { foto: vendedor, alt: "Vendedor ao lado de uma arara de camisas", lugar: "row-span-2" },
+  { foto: perfume, alt: "Frasco de perfume", lugar: "" },
+  { foto: mala, alt: "Mala de couro", lugar: "" },
+  { foto: auscultadores, alt: "Auscultadores", lugar: "" },
+  { foto: cafe, alt: "Café expresso", lugar: "" },
+  { foto: tenis, alt: "Ténis brancos", lugar: "" },
+  { foto: vestido, alt: "Mulher de vestido vermelho", lugar: "col-span-2" },
+];
+/** No telemóvel, só uma faixa de quatro, para a página continuar leve. */
+const FAIXA = [perfume, mala, tenis, cafe];
 
 const input = "mt-1 w-full rounded-xl border border-line bg-superficie px-4 py-3 text-base outline-none transition-colors duration-300 focus:border-brand";
 
@@ -54,15 +75,30 @@ export function AuthForm({ modo }: { modo: "entrar" | "registo" }) {
 
   return (
     <div className="min-h-screen md:grid md:grid-cols-2">
-      <aside style={{ "--toldo": "#0B2F73" } as React.CSSProperties} className="md:flex md:flex-col">
-        <div className="bg-brand-deep px-4 pb-6 pt-5 text-white md:flex md:flex-1 md:flex-col md:justify-between md:p-12">
+      <aside className="relative overflow-hidden bg-brand-deep text-white md:sticky md:top-0 md:h-screen">
+        {/* Computador: mosaico de fotos de vários negócios */}
+        <div className="absolute inset-0 hidden grid-cols-3 grid-rows-3 gap-2 p-2 md:grid" aria-hidden="true">
+          {MOSAICO.map((m) => (
+            <div key={m.alt} className={`relative overflow-hidden rounded-2xl ${m.lugar}`}>
+              <Image src={m.foto} alt="" fill sizes="20vw" className="object-cover" />
+            </div>
+          ))}
+        </div>
+        <div className="pointer-events-none absolute inset-0 hidden bg-gradient-to-t from-[#070d1a] via-[#070d1a]/30 to-[#070d1a]/60 md:block" />
+
+        <div className="relative flex flex-col px-4 pb-5 pt-5 md:h-full md:justify-between md:p-10">
           <Link href="/" aria-label="VITRYNE, início"><Logo tone="white" /></Link>
-          <div className="hidden md:block">
-            <p className="text-5xl font-bold leading-tight">A tua loja.<br />O teu mundo.</p>
-            <p className="mt-4 max-w-sm text-lg text-white/80">Uma montra com o teu nome e pedidos que chegam ao WhatsApp já escritos.</p>
+          {/* Telemóvel: faixa de quatro fotos */}
+          <ul className="mt-5 grid grid-cols-4 gap-2 md:hidden" aria-hidden="true">
+            {FAIXA.map((f, i) => (
+              <li key={i} className="overflow-hidden rounded-xl"><Image src={f} alt="" sizes="25vw" className="aspect-square h-auto w-full object-cover" /></li>
+            ))}
+          </ul>
+          <div className="vidro hidden max-w-md rounded-2xl p-6 md:block">
+            <p className="text-4xl font-bold leading-tight">A tua loja.<br /><span className="text-realce">O teu mundo.</span></p>
+            <p className="mt-3 text-base text-white/80">Roupa, beleza, electrónica, comida: uma montra com o teu nome e pedidos que chegam ao WhatsApp já escritos.</p>
           </div>
         </div>
-        <div className="toldo md:hidden" aria-hidden="true" />
       </aside>
     <main id="conteudo" className="mx-auto flex w-full max-w-sm flex-col justify-center px-4 py-10 md:py-16">
       {confirmar ? (
